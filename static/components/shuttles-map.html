@@ -2,14 +2,13 @@
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../../bower_components/google-map/google-map.html">
 
-<dom-module id="shuttles-map">
-  <style>
+<dom-module id="shuttles-map"> 
+  <style> 
     :host {
       width: 100%;
       height: 100%;
@@ -48,7 +47,7 @@
     }
   </style>
 
-  <template>
+  <template>  
     <iron-ajax
       id="fetchUpdates"
       url="/updates"
@@ -67,12 +66,6 @@
       handle-as="json"
       on-response="placeStops">
     </iron-ajax>
-    <iron-ajax
-      id="fetchGPX"
-      url="/gpx"
-      handle-as="text"
-      on-response="downloadGPX">
-    </iron-ajax>
 
     <google-map id="shuttleMap" class="shuttle-map" zoom="{{zoom}}" latitude="{{lat}}" longitude="{{lng}}"></google-map>
     <div id="logo">
@@ -87,7 +80,6 @@
               <paper-tab>About</paper-tab>
               <paper-tab>Schedule</paper-tab>
               <paper-tab>API</paper-tab>
-              <paper-tab>GPX</paper-tab>
             </paper-tabs>
           </paper-toolbar>
           <iron-pages selected="{{selected}}">
@@ -106,21 +98,13 @@
                 Download the RPI Parking and Transportation shuttle schedule.
               </div>
             </section>
-            <section>
-              <!-- API Docs & KML -->
+            <section> 
+              <!-- API Docs & KML --> 
               <div class="content">
                 Developers may use our API to enrich their applications, create mobile applications, or implement any other creative ideas!<br/>
                 Visit our wiki to learn more about using our API.
                 <br/><br/>
                 We have also provided KML data for our tracking view. Click to download.
-              </div>
-            </section>
-            <section>
-              <!-- GPX File Download -->
-              <div class="content">
-                We provide tracking history from the last 24 hours of the shuttles in the form of a '.gpx' file. GPX files can be viewed in Google Maps and Google Earth.
-                <br/><br/>
-                <paper-button id="obtainGPX" on-click="getGPX" raised>Download</paper-button>
               </div>
             </section>
           </iron-pages>
@@ -130,7 +114,7 @@
   </template>
 
   <script>
-    Polymer({
+    Polymer({ 
 
       is: "shuttles-map",
 
@@ -140,7 +124,7 @@
           reflectToAttribute: true
         },
         lng : {
-          type: String,
+          type: String, 
           reflectToAttribute: true
         },
         zoom: {
@@ -163,10 +147,6 @@
 
       toggleMenu: function() {
         this.$.menuDialog.open();
-      },
-
-      getGPX: function() {
-        this.$.fetchGPX.generateRequest();
       },
 
       initializeTracking: function() {
@@ -196,7 +176,7 @@
           for (i = 0; i < updates.length; i++) {
             // Create position from vehicle coordinates
             var pos = new google.maps.LatLng(
-              updates[i]["lat"],
+              updates[i]["lat"], 
               updates[i]["lng"]);
             // Place shuttle marker on map
             var marker = new google.maps.Marker({
@@ -243,28 +223,13 @@
         }
       },
 
-      downloadGPX: function(event, response) {
-        var gpx = response.response;
-
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(gpx));
-        element.setAttribute('download', "tracking.gpx");
-
-        element.style.display = 'none';
-        document.body.appendChild(element);
-
-        element.click();
-
-        document.body.removeChild(element);
-      },
-
       placeStops: function(event, response) {
         var stops = response.response;
         if (stops) {
           // Clear previous stop markers
           this.clearMarkers(this.stops);
           for (i = 0; i < stops.length; i++) {
-            // Create position from stop coordinates
+            // Create position from stop coordinates 
             var pos = new google.maps.LatLng(
               stops[i]["lat"],
               stops[i]["lng"]);
