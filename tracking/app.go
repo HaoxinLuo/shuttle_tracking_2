@@ -134,3 +134,10 @@ func WriteJSON(w http.ResponseWriter, data interface{}) error {
 	w.Write(b)
 	return nil
 }
+
+// WriteText writes the data as text.
+func WriteText(w http.ResponseWriter, data string) error {
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(data))
+	return nil
+}
