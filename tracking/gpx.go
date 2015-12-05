@@ -7,7 +7,7 @@ import (
 //	"regexp"
 	// "strings"
 	"time"
-//  "strconv"
+  "strconv"
 //  "os"
 	// "log"
 	log "github.com/Sirupsen/logrus"
@@ -44,9 +44,10 @@ func (App *App) GPXHandler(w http.ResponseWriter, r *http.Request) {
 
 			counter = counter + 1
 			for _, location := range vehicleHistory {
-
-				gpxFile = gpxFile + "<trkpt lat=\"" + location.Lat + "\" lon=\"" + location.Lng + "\"></trkpt>\n"
-
+				loc := location.Created
+				gpxFile = gpxFile + "<trkpt lat=\"" + location.Lat + "\" lon=\"" + location.Lng + "\">\n"
+				//gpxFile = gpxFile + "<time>" + location.Created.CFormat("%Y-%m-%dT%H:%M:%SZ")	 + "</time>\n</trkpt>\n"
+				gpxFile = gpxFile + "<time>" + convTime(loc)+ "</time>\n</trkpt>\n"
 			}
 			gpxFile = gpxFile + "</trkseg>\n</trk>\n"
 		}
@@ -60,4 +61,14 @@ func (App *App) GPXHandler(w http.ResponseWriter, r *http.Request) {
 	gpxFile = gpxFile + "</gpx>"
 	// Send gpx file content to client as text
 	WriteText(w, gpxFile)
+}
+
+func convTime(loc time.Time) (s string){
+	s = strconv.Itoa(loc.Year())+"-"+
+		loc.Month())+"-"+
+		strconv.Itoa(loc.Day())+"T"+
+		strconv.Itoa(loc.Hour())+":"+
+		strconv.Itoa(loc.Minute())+":"+
+		strconv.Itoa(loc.Second())+"Z"
+	return s
 }
