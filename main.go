@@ -35,6 +35,7 @@ func main() {
 	// Routing
 	r := mux.NewRouter()
 	r.HandleFunc("/", IndexHandler).Methods("GET")
+	r.HandleFunc("/gpx", App.GPXHandler).Methods("GET")
 	r.HandleFunc("/admin", AdminHandler).Methods("GET")
 	r.HandleFunc("/admin/{*}", AdminHandler).Methods("GET")
 	r.HandleFunc("/vehicles", App.VehiclesHandler).Methods("GET")
