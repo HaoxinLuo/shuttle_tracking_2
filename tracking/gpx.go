@@ -65,7 +65,7 @@ func (App *App) GPXHandler(w http.ResponseWriter, r *http.Request) {
 
 func convTime(loc time.Time) (s string){
 	s = strconv.Itoa(loc.Year())+"-"+
-		loc.Month())+"-"+
+		strconv.Itoa(int(loc.Month()))+"-"+
 		strconv.Itoa(loc.Day())+"T"+
 		strconv.Itoa(loc.Hour())+":"+
 		strconv.Itoa(loc.Minute())+":"+
