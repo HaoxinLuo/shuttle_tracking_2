@@ -166,6 +166,7 @@
       },
 
       getGPX: function() {
+        // Prepare and generate gpx file for download
         this.$.fetchGPX.generateRequest();
       },
 
@@ -244,17 +245,19 @@
       },
 
       downloadGPX: function(event, response) {
+        // Automatically notify client for download of the generated gpx file
         var gpx = response.response;
-
+        // Create an invisible link that links to the download of gpx file
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(gpx));
         element.setAttribute('download', "tracking.gpx");
-
         element.style.display = 'none';
-        document.body.appendChild(element);
 
+        // Add the link element to the html body, and automatically click it
+        document.body.appendChild(element);
         element.click();
 
+        // Remove link element after download
         document.body.removeChild(element);
       },
 
