@@ -48,6 +48,18 @@ func (App *App) GPXHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var stops []Stop
+	err = App.Stops.Find(bson.M{}).All(&stops)
+	if err != nil{
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+	}
+	for _, stop := range stops{
+		gpxFile = gpxFile + "<wpt lat=\"" + strconv.FormatFloat(stop.Lat,'f',-1,64) + "\" lon=\"" + strconv.FormatFloat(stop.Lng,'f',-1,64) + "\">\n"
+		gpxFile = gpxFile + "<name>"+stop.Name+"</name>\n"
+		gpxFile = gpxFile + "</wpt>\n";
+	}
+
+
 	// Close "gpx" element
 	gpxFile = gpxFile + "</gpx>"
 

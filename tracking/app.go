@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
 	log "github.com/Sirupsen/logrus"
 	"gopkg.in/mgo.v2"
 )
@@ -67,6 +66,11 @@ func InitApp(Config *Configuration) *App {
 	if serr != nil {
 		log.Fatalf("error reading vehicle configuration file: %v", serr)
 	}
+	
+	terr := readSeedStopConfiguration("seed/stop_seed.json",&app)
+	if terr != nil {
+		log.Fatalf("error reading stop configuration file: %v",terr)
+	}
 
 	return &app
 }
@@ -118,6 +122,45 @@ func readSeedConfiguration(fileName string, app *App) error {
 	// Add vehicles to the database
 	for j := range Vehicles {
 		app.Vehicles.Insert(&Vehicles[j])
+	}
+
+	return nil
+}
+
+//readSeedConfiguration adds a new vehicle to the database from seed.
+func readSeedStopConfiguration(fileName string, app *App) error {
+	// Open seed_vehicle config file and decode JSON to app struct
+	file, err := os.Open(fileName)
+
+	// Error handling
+	if err != nil {
+		log.Warn(err)
+	}
+	// Create a decoder for a file
+	fileread := json.NewDecoder(file)
+
+	// Create map for json data and slice for vehicles
+	var stopsMap map[string][]map[string]interface{}
+	Stops := []Stop{}
+
+	// Call decode on fileread to place items into map
+	if err := fileread.Decode(&stopsMap); err != nil {
+		log.Warn(err)
+	}
+
+	// Initialize our vehicles
+	for i := range stopsMap["Stops"] {
+		item := stopsMap["Stops"][i]
+		StopName, _ := item["StopName"].(string)
+		StopLat, _ := item["Lat"].(float64)
+		StopLng, _ := item["Lng"].(float64)
+		stop := Stop{StopName,"","","","",StopLat,StopLng,true,""}
+		Stops = append(Stops, stop)
+	}
+
+	// Add vehicles to the database
+	for j := range Stops {
+		app.Stops.Insert(&Stops[j])
 	}
 
 	return nil
